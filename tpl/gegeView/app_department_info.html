@@ -13,18 +13,18 @@
 				</div>
 			</div>
 		</form>
-
 		<form class="form-horizontal" ng-if="gegeUser.Role!=2">
 			<div class="row">
 				<div class="form-group">
 					<label class="col-sm-1 control-label text-right">医院：</label>
 					<div class="col-sm-2">
-						<select class="form-control" ng-model="searchOption" ng-options="item.Name for item in hospitalList">
+						<select class="form-control" ng-model="searchOption" ng-options="item.Name for item in hospitalList" ng-change="changehp(searchOption)">
 							<option value="">请选择</option>
+							<!--<option ng-repeat="item in hospitalList" value="{{item.HospitalId}}">{{item.Name}}</option>-->
 						</select>
 					</div>
 					<div class="col-sm-2 col-sm-offset-1">
-						<button type="button" class="btn btn-default" ng-click="searchByHospital(1)">查询</button>
+						<button type="button" class="btn btn-default" ng-click="searchByHospital(1,searchOption)">查询</button>
 						<button type="button" class="btn btn-default" ng-click="getAllDepartmentList(1)">全部</button>
 					</div>
 				</div>
@@ -127,7 +127,7 @@
 												<input type="text" class="form-control" placeholder="医院" ng-if="!showSelectHospital" ng-model="departmentInfoDetail.HospitalName" readonly>
 
 												<select class="form-control" ng-if="showSelectHospital" ng-model="departmentInfoDetail.HospitalId">
-													<option ng-repeat="item in hospitalList" value="{{item.HospitalId}}">{{item.Name}}</option>
+													<option ng-repeat="item in hospitalLists" value="{{item.HospitalId}}">{{item.Name}}</option>
 												</select>
 											</div>
 										</div>

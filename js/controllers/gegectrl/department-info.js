@@ -19,15 +19,15 @@ app
 		}
 
 		$scope.hospitalList = []; //医院选择列表
+		$scope.hospitalLists = []; //避免搜索的值被添加科室选中医院的值覆盖
 		$scope.currentPageNo = 1; //第一页
 		$scope.pageSize = 16; //设置每页16条
 		$scope.pageList = []; //分页
 		$scope.showSelectHospital = true; //选中数据显示编辑
 		$scope.UpDepartmentState = false; //上级科室编辑状态
-		$scope.searchOption = ''; //搜索条件
+		$scope.searchOption = {}; //搜索条件
 		$scope.initDepatmentInfo = {
 			DisplayOrder: 0,
-			DepartmentId: '',
 			HospitalName: '',
 			Name: '',
 			Contact: '',
@@ -39,17 +39,22 @@ app
 			if(res.code == 0) {
 				//处理返回数据
 				$scope.hospitalList = res.body;
-
+				$scope.hospitalLists = angular.copy(res.body);
 			} else {
 				alert('数据为空');
 			}
 		}, function(err) {
 			alert('网络出错，请刷新重试！');
 		});
+		$scope.changehp = function(a) {
+			console.log($scope.searchOption);
+			$scope.searchOption=a;
+			console.log(a);
+		}
 
 		//根据医院搜索
 		$scope.searchByHospital = function(page) {
-			console.log($scope.searchOption.HospitalId);
+			console.log($scope.searchOption);
 			modelService.getDepByHospId({
 				operatorId: $scope.gegeUser.AdmId,
 				HospitalId: $scope.searchOption.HospitalId,
@@ -230,7 +235,7 @@ app
 				console.log(JSON.stringify({
 					model: $scope.departmentInfoDetail
 				}));
-				modelService.updateHospitalInfo({
+				modelService.updateDepatmentInfo({
 					model: $scope.departmentInfoDetail
 				}).then(function(res) {
 					if(res.code == 0) {

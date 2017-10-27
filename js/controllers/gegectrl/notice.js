@@ -78,7 +78,7 @@ app
 					if(data.code == 0) {
 						var imgUrl = modelService.rootUrl + 'Banner/' + data.body.Filename;
 						$('#summernote').summernote('insertImage', imgUrl);
-					}else{
+					} else {
 						alert('上传图片失败');
 					}
 
@@ -257,24 +257,29 @@ app
 						contentType: false,
 						data: fd,
 						success: function(res) {
-							$scope.noticeDetail.Attachment = res;
-							modelService.addNoticeList({
-								model: $scope.noticeDetail
-							}).then(function(result) {
-								if(result.code == 0) {
-									alert('添加成功');
-									$scope.initState();
-									$scope.getNoticeList($scope.currentPageNo);
-									$('#modal_showAudit').modal('hide');
-									$scope.noticeDetail = {};
-								} else {
-									alert('添加失败');
-								}
+							if(res.code == 0) {
+								$scope.noticeDetail.Attachment = res.body.Filename;
+								modelService.addNoticeList({
+									model: $scope.noticeDetail
+								}).then(function(result) {
+									if(result.code == 0) {
+										alert('添加成功');
+										$scope.initState();
+										$scope.getNoticeList($scope.currentPageNo);
+										$('#modal_showAudit').modal('hide');
+										$scope.noticeDetail = {};
+									} else {
+										alert('添加失败');
+									}
 
-							}, function(error) {
-								console.log(error);
-								alert('网络故障，请刷新重试!');
-							});
+								}, function(error) {
+									console.log(error);
+									alert('网络故障，请刷新重试!');
+								});
+							}else{
+								alert('上传附件失败!');
+							}
+
 						},
 						error: function(err) {
 							console.log(err);
