@@ -3,10 +3,6 @@
 app.controller('SigninFormController', ['$scope', '$http', '$state', 'modelService', '$newLocalStorage', function($scope, $http, $state, modelService, $newLocalStorage) {
 	$scope.user = {};
 	$scope.authError = null;
-//	$scope.user = {
-//		userID: "doomthr",
-//		password: "123456"
-//	};
 	$scope.loginLock = false;
 	//判断是否已经登录
 	var gegeManager = JSON.parse($newLocalStorage.get('gege_manager'));
