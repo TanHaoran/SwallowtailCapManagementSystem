@@ -1,0 +1,286 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="NurseManageCtrl">
+	<form class="form-horizontal">
+		<div class="row" style="font-size: 18px;">
+			<div class="form-group">
+				<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+					<i class="fa fa-refresh"></i>&nbsp;刷新
+				</div>
+				<div class="col-sm-1" ng-click="addNurseInfo()"><i class="fa fa-plus-circle"></i>&nbsp;添加</div>
+				<div class="col-sm-1" ng-click="editNurseInfo()"><i class="fa fa-pencil"></i>&nbsp;编辑</div>
+				<div class="col-sm-1" ng-click="deleteNurseInfo()"><i class="fa fa-times-circle-o"></i>&nbsp;删除</div>
+				<div class="col-sm-1" ng-click="importNurseInfo()">
+					<input style="width: 100%;position: absolute;top: 0;left: 0;opacity: 0;" type="file" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" file-model="nurseFile" onchange="angular.element(this).scope().changefile()" />
+					<i class="fa fa-download"></i>&nbsp;导入</div>
+				<div class="col-sm-1" ng-click="initPassword()"><i class="fa fa-key"></i>&nbsp;重置密码</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="deparment-wrap">
+		<div class="table-responsive">
+			<table class="table table-striped b-t b-light table-hospital-info">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>手机</th>
+						<th>姓名</th>
+						<th>科室</th>
+						<th>职务</th>
+						<th>QQ</th>
+						<th>微信</th>
+						<th>微博</th>
+						<th>护理不良事件</th>
+						<th>学分</th>
+						<th>排班</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in nurseList track by $index" ng-click="operateData($index,item)">
+						<td>{{item.id}}</td>
+						<td>{{item.cellphone}}</td>
+						<td>{{item.name}}</td>
+						<td>{{item.departmentName}}</td>
+						<td>{{iten.positions}}</td>
+						<td>{{item.bindInfo.QQNickName}}</td>
+						<td>{{item.bindInfo.WeixinNickName}}</td>
+						<td>{{item.bindInfo.WeiboNickName}}</td>
+						<td>{{item.bindInfo.BLSJId}}</td>
+						<td>{{item.bindInfo.XFId}}</td>
+						<td>{{item.bindInfo.PBId}}</td>
+						<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+					</tr>
+				</tbody>
+
+			</table>
+			<!--分页-->
+			<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+				<ul class="pagination pagination-sm m-t-none m-b-none">
+					<li ng-click="goPre(currentPageNo)">
+						<a href><i class="fa fa-chevron-left"></i></a>
+					</li>
+					<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+						<a href>{{i}}</a>
+					</li>
+					<li ng-click="goNext(currentPageNo)">
+						<a href><i class="fa fa-chevron-right"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+			<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+				<div class="modal-content">
+					<div class="modal-header" style="position: relative;height: 60px;">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+						<h4>用户信息</h4>
+					</div>
+					<div class="modal-body">
+						<div class="wrapper-md">
+							<form class="form-horizontal">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">ID：</label>
+												<div class="col-sm-8">
+													{{nurseInfo.id}}
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">护理不良事件：</label>
+												<div class="col-sm-4">
+													{{nurseInfo.bindInfo.BLSJId}}
+												</div>
+												<div class="col-sm-4 text-left">
+													<button type="button" class="btn btn-default">解绑</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">手机：</label>
+												<div class="col-sm-8">
+													<input type="text" class="form-control" placeholder="手机" ng-model="nurseInfo.cellphone">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">学分：</label>
+												<div class="col-sm-4">
+													{{nurseInfo.bindInfo.XFId}}
+												</div>
+												<div class="col-sm-4 text-left">
+													<button type="button" class="btn btn-default">解绑</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">姓名：</label>
+												<div class="col-sm-8">
+													<input type="text" class="form-control" placeholder="姓名" ng-model="nurseInfo.name">
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">微信：</label>
+												<div class="col-sm-4">
+													{{nurseInfo.bindInfo.WeixinNickName}}
+												</div>
+												<div class="col-sm-4 text-left">
+													<button type="button" class="btn btn-default">解绑</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">性别：</label>
+												<div class="col-sm-2">
+													<div class="radio">
+														<label class="i-checks">
+                <input type="radio" name="a" value="男" ng-model="nurseInfo.sex">
+                <i></i>
+                	男
+              </label>
+													</div>
+												</div>
+												<div class="col-sm-2">
+													<div class="radio">
+														<label class="i-checks">
+                <input type="radio" name="a" value="女" ng-model="nurseInfo.sex" checked>
+                <i></i>
+                	女
+              </label>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">QQ：</label>
+												<div class="col-sm-4">
+													{{nurseInfo.bindInfo.QQNickName}}
+												</div>
+												<div class="col-sm-4 text-left">
+													<button type="button" class="btn btn-default">解绑</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">医院：</label>
+												<div class="col-sm-8">
+													<!--<select class="form-control" ng-model="nurseInfo.HospitalId">
+														<option value="dep.DepartmentId" ng-repeat="hosp in hospList">{{dep.Name}}</option>
+													</select>-->
+													<select class="form-control" ng-model="nurseInfo.hospitalId" ng-change="changeHospital(nurseInfo.hospitalId)" ng-disabled="lockHospital">
+														<option value="">请选择</option>
+														<option ng-repeat="item in hospitalList" value="{{item.HospitalId}}">{{item.Name}}</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">微博：</label>
+												<div class="col-sm-4">
+													{{nurseInfo.ID}}
+												</div>
+												<div class="col-sm-4 text-left">
+													<button type="button" class="btn btn-default">解绑</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">科室：</label>
+												<div class="col-sm-8">
+													<select class="form-control" ng-model="nurseInfo.departmentId">
+														<!--<option value="">请选择</option>-->
+														<option ng-repeat="dep in depList" value="{{dep.DepartmentId}}">{{dep.Name}}</option>
+													</select>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="row">
+											<div class="form-group">
+												<label class="col-sm-4 control-label text-right">职务：</label>
+												<div class="col-sm-8">
+													<input type="text" class="form-control" placeholder="职务" ng-model="nurseInfo.positions">
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+							</form>
+						</div>
+
+					</div>
+					<div class="modal-footer" style="text-align: center;">
+						<div style="display: inline-block;">
+							<button type="button" class="btn btn-default" ng-click="subNurseInfo()">确定</button>
+						</div>
+						<div style="display: inline-block;">
+							<button type="button" class="btn btn-default" ng-click="closeModal()">取消</button>
+						</div>
+					</div>
+				</div>
+				</divs>
+			</div>
+		</div>
+
+	</div>
+</div>

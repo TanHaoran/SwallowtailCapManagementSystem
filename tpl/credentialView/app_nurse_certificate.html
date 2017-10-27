@@ -1,0 +1,211 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="NurseCertificateCtrl">
+	<div ng-show="showContent">
+		<form class="form-horizontal">
+			<div class="row" style="font-size: 18px;">
+				<div class="form-group">
+					<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+						<i class="fa fa-refresh"></i>&nbsp;刷新
+					</div>
+					<div class="col-sm-1" ng-click="editCertificateDetail()"><i class="fa fa-pencil"></i>&nbsp;审核</div>
+				</div>
+			</div>
+		</form>
+
+		<form class="form-horizontal">
+			<div class="row">
+				<div class="form-group">
+					<label class="col-sm-1 control-label text-right">姓名：</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control" placeholder="姓名" ng-model="searchOption.Name">
+					</div>
+					<label class="col-sm-1 control-label text-right">证书编号：</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control" placeholder="证书编号" ng-model="searchOption.certificateID">
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<button type="button" class="btn btn-default" ng-click="searchByOption()">查询</button>
+						<button type="button" class="btn btn-default" ng-click="searchAll()">全部</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+
+		<div class="wrapper-md">
+
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light table-certificate">
+					<thead>
+						<tr>
+							<!--<th>
+								<label class="i-checks m-b-none">
+                               <input type="checkbox"><i></i>
+                           </label>
+							</th>-->
+							<th>认证状态</th>
+							<th>姓名</th>
+							<th>出生年月</th>
+							<th>性别</th>
+							<th>国籍</th>
+							<th>执业地点</th>
+							<th>执业证书编号</th>
+							<th>身份证号</th>
+							<th>首次注册日期</th>
+							<th>最近注册日期</th>
+							<th>注册有效期</th>
+							<th>注册机关</th>
+							<th>发证机关</th>
+							<th>发证日期</th>
+							<th>首次工作日期</th>
+							<!--<th style="width:30px;"></th>-->
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in certificateList track by $index" ng-click="operateData($index,item)">
+							<!--<td>
+								<label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label>
+							</td>-->
+							<td>{{item.auditState}}</td>
+							<td>{{item.Name}}</td>
+							<td>{{item.BirthDateTime}}</td>
+							<td>{{item.Sex}}</td>
+							<td>{{item.Country}}</td>
+							<td>{{item.PracticeAddress}}</td>
+							<td>{{item.CertificateId}}</td>
+							<td>{{item.IDCard}}</td>
+							<td>{{item.FirstRegisterDateTime}}</td>
+							<td>{{item.LastRegisterDateTime}}</td>
+							<td>{{item.RegisterToDateTime}}</td>
+							<td>{{item.RegisterAuthority}}</td>
+							<td>{{item.CertificateAuthority}}</td>
+							<td>{{item.CertificateDateTime}}</td>
+							<td>{{item.FirstJobTimeDate}}</td>
+							<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+						</tr>
+					</tbody>
+
+				</table>
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<div style="position: absolute;left: 10px;top: 10px;">
+								<div style="display: inline-block;">
+									<button type="button" class="btn btn-primary" ng-if="certificateDetail.VerifyStatus==1" ng-click="updateAuditStatus('ok')">通过</button>
+								</div>
+								<div style="display: inline-block;">
+									<button type="button" class="btn btn-danger" ng-if="certificateDetail.VerifyStatus==1" ng-click="updateAuditStatus('deny')">拒绝</button>
+								</div>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="row modal-certificate-body">
+								<div class="col-md-6">
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">姓名</div>
+										<div class="col-md-6">{{certificateDetail.Name}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">出生日期</div>
+										<div class="col-md-6">{{certificateDetail.BirthDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">性别</div>
+										<div class="col-md-6">{{certificateDetail.Sex}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">国籍</div>
+										<div class="col-md-6">{{certificateDetail.Country}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">执业地点</div>
+										<div class="col-md-6">{{certificateDetail.PracticeAddress}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">执业证书编号</div>
+										<div class="col-md-6">{{certificateDetail.CertificateId}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">身份证号</div>
+										<div class="col-md-6">{{certificateDetail.IDCard}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">首次注册日期</div>
+										<div class="col-md-6">{{certificateDetail.FirstRegisterDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">最近注册日期</div>
+										<div class="col-md-6">{{certificateDetail.LastRegisterDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">注册有效期</div>
+										<div class="col-md-6">{{certificateDetail.RegisterToDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">注册机关</div>
+										<div class="col-md-6">{{certificateDetail.RegisterAuthority}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">发证机关</div>
+										<div class="col-md-6">{{certificateDetail.CertificateAuthority}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">发证日期</div>
+										<div class="col-md-6">{{certificateDetail.CertificateDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6 text-right">首次工作日期</div>
+										<div class="col-md-6">{{certificateDetail.FirstJobTimeDate}}</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="row" ng-if="certificateDetail.Picture1">
+										<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{certificateDetail.Picture1Url}}" alt="" /></div>
+									</div>
+									<div class="row" style="margin-top: 10px;" ng-if="certificateDetail.Picture2">
+										<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{certificateDetail.Picture2Url}}" alt="" /></div>
+									</div>
+									<div class="row" style="margin-top: 10px;" ng-if="certificateDetail.Picture3">
+										<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{certificateDetail.Picture3Url}}" alt="" /></div>
+									</div>
+									<!--<div class="row" style="margin-top: 10px;" ng-if="certificateDetail.Picture4">
+									<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{certificateDetail.Picture4}}" alt="" /></div>
+								</div>-->
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<div class="row">
+								<div class="col-md-3">
+									审核意见
+								</div>
+								<div class="col-md-8">
+									<textarea class="form-control" style="resize: none;width: 100%;height: 130px;" ng-model="certificateDetail.VerifyView" placeholder="请输入审核意见(拒绝通过为必填项)"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

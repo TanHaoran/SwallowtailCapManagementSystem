@@ -1,0 +1,242 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="HospitalInfoCtrl">
+	<div ng-show="showContent">
+		<div class="row" style="font-size: 18px;">
+			<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()"><i class="fa fa-refresh"></i>&nbsp;刷新</div>
+			<div class="col-sm-1" ng-click="addHospitalInfo()"><i class="fa fa-plus-circle"></i>&nbsp;添加</div>
+			<div class="col-sm-1" ng-click="editHospitalInfo()"><i class="fa fa-pencil"></i>&nbsp;编辑</div>
+			<div class="col-sm-1" ng-click="deleteHospitalInfo()"><i class="fa fa-times-circle-o"></i>&nbsp;删除</div>
+		</div>
+
+		<div class="wrapper-md">
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light table-hospital-info">
+					<thead>
+						<tr>
+							<th>是否启用</th>
+							<th>医院名称</th>
+							<th>医院等级</th>
+							<th>医院地址</th>
+							<th>联系人</th>
+							<th>联系电话</th>
+							<th>添加者</th>
+							<th>添加时间</th>
+							<th>是否开放不良事件上报</th>
+							<th>是否开放学分查询</th>
+							<th>是否开放排班查询</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in hospitalInfoList track by $index" ng-click="operateData($index,item)">
+							<td>{{item.DisplayOrderName}}</td>
+							<td>{{item.Name}}</td>
+							<td>{{item.Grade}}</td>
+							<td>经度{{item.Longitude}} 纬度{{item.Latitude}}</td>
+							<td>{{item.Contact}}</td>
+							<td>{{item.Phone}}</td>
+							<td>{{item.OperatorId}}</td>
+							<td>{{item.OperatorDateTime}}</td>
+							<td>{{item.IsOpenBLSJName}}</td>
+							<td>{{item.IsOpenXFName}}</td>
+							<td>{{item.IsOpenPBName}}</td>
+							<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+						</tr>
+					</tbody>
+
+				</table>
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<h4>医院信息</h4>
+						</div>
+						<div class="modal-body">
+							<div class="wrapper-md">
+								<form class="form-horizontal">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-4 control-label text-right">是否启用：</label>
+													<div class="col-sm-2">
+														<div class="radio">
+															<label class="i-checks">
+                <input type="radio" name="a" value="1" ng-model="hospitalInfoDetail.DisplayOrder">
+                <i></i>
+                	是
+              </label>
+														</div>
+													</div>
+													<div class="col-sm-2">
+														<div class="radio">
+															<label class="i-checks">
+                <input type="radio" name="a" value="0" ng-model="hospitalInfoDetail.DisplayOrder" checked>
+                <i></i>
+                	否
+              </label>
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-4 control-label text-right">医院名称：</label>
+													<div class="col-sm-8">
+														<input type="text" class="form-control" placeholder="医院名称" ng-model="hospitalInfoDetail.Name">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-sm-8 col-sm-offset-1 text-left">
+														<div class="checkbox">
+															<label class="i-checks">
+                											<input type="checkbox" ng-true-value="1" ng-model="hospitalInfoDetail.IsOpenBLSJ">
+                											<i></i>
+                											是否开放护理不良事件移动端功能
+              												</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-4 control-label text-right">医院等级：</label>
+													<div class="col-sm-8">
+														<select class="form-control" ng-model="hospitalInfoDetail.Grade" required>
+															<option value="">请选择</option>
+															<option value="三级甲等">三级甲等</option>
+															<option value="三级乙等">三级乙等</option>
+															<option value="二级甲等">二级甲等</option>
+															<option value="二级乙等">二级乙等</option>
+															<option value="一级甲等">一级甲等</option>
+															<option value="一级乙等">一级乙等</option>
+														</select>
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-sm-8 col-sm-offset-1 text-left">
+														<div class="checkbox">
+															<label class="i-checks">
+                											<input type="checkbox" ng-true-value="1" ng-model="hospitalInfoDetail.IsOpenXF">
+                											<i></i>
+                											是否开放学分查询功能
+              												</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-4 control-label text-right">联系人：</label>
+													<div class="col-sm-8">
+														<input type="text" class="form-control" placeholder="联系人" ng-model="hospitalInfoDetail.Contact">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<div class="col-sm-8 col-sm-offset-1 text-left">
+														<div class="checkbox">
+															<label class="i-checks">
+                											<input type="checkbox" ng-true-value="1" ng-model="hospitalInfoDetail.IsOpenPB">
+                											<i></i>
+                											是否开放排班查询功能
+              												</label>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-4 control-label text-right">联系电话：</label>
+													<div class="col-sm-8">
+														<input type="text" class="form-control" placeholder="联系电话" ng-model="hospitalInfoDetail.Phone">
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-2 control-label text-right">地址：</label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-sm-10 col-sm-offset-1">
+													<div id="map-container" style="width:100%;height:320px"></div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+						<div class="modal-footer" style="text-align: center;">
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="subHospitalInfo()">确定</button>
+							</div>
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="closeModal()">取消</button>
+							</div>
+						</div>
+					</div>
+					</divs>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,49 @@
+/*专业技术资格证开始*/
+.table-certificate thead th{
+	white-space: nowrap;
+}
+
+/*专业技术资格证结束*/
+
+/*执业证开始*/
+.table-liscence thead th{
+	white-space: nowrap;
+}
+
+.modal-certificate-body{
+	max-height: 500px;
+	overflow-y: auto;
+}
+/*执业证结束*/
+.padding_wrap{
+	padding: 10px;
+}
+
+/*管理员管理开始*/
+.table-manager thead th{
+	white-space: nowrap;
+}
+.manager-authority,.manager-department{
+	border: 1px solid #dee5e7;
+}
+.row-margin{
+	margin-top: 15px;
+}
+/*管理员管理结束*/
+
+/*医院信息管理开始*/
+.table-hospital-info thead th{
+	white-space: nowrap;
+}
+.tr-success>td{
+    background-color: #d9edf7 !important;
+}
+/*医院信息管理结束*/
+/*科室信息管理开始*/
+.deparment-wrap{
+	padding: 8px 20px;
+}
+.table-department thead th{
+	white-space: nowrap;
+}
+/*科室信息管理结束*/

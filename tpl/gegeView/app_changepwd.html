@@ -1,0 +1,28 @@
+
+<div class="container" ng-init="app.settings.container = false;">
+	<div ng-controller="ChangePwdCtrl">
+		<form class="form-horizontal">
+		<div class="row">
+			<div class="form-group">
+				<label class="col-sm-2 col-sm-offset-2 control-label text-right">新密码：</label>
+				<div class="col-sm-5">
+					<input type="password" class="form-control" placeholder="新密码" ng-model="newPwd">
+				</div>
+			</div>
+			<!--<div class="form-group">
+				<label class="col-sm-2 col-sm-offset-2 control-label text-right">确认新密码：</label>
+				<div class="col-sm-5">
+					<input type="password" class="form-control" placeholder="确认新密码" ng-model="confirmPwd">
+				</div>
+			</div>-->
+			<div class="form-group">
+				<div class="col-sm-12 text-center">
+					<button class="btn btn-default" ng-click="subInfo()">提交</button>
+				</div>
+
+			</div>
+		</div>
+	</form>
+	</div>
+  <div class="text-center" ng-include="'tpl/blocks/page_footer.html'"></div>
+</div>

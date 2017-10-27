@@ -1,0 +1,200 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="DepartmentInfoCtrl">
+	<div ng-show="showContent">
+		<!--<h1 class="m-n font-thin h3">医院信息维护</h1>-->
+		<form class="form-horizontal">
+			<div class="row" style="font-size: 18px;">
+				<div class="form-group">
+					<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+						<i class="fa fa-refresh"></i>&nbsp;刷新
+					</div>
+					<div class="col-sm-1" ng-click="addDepartmentInfo()"><i class="fa fa-plus-circle"></i>&nbsp;添加</div>
+					<div class="col-sm-1" ng-click="editDepartmentInfo()"><i class="fa fa-pencil"></i>&nbsp;编辑</div>
+					<div class="col-sm-1" ng-click="deleteDepartmentInfo()"><i class="fa fa-times-circle-o"></i>&nbsp;删除</div>
+				</div>
+			</div>
+		</form>
+
+		<form class="form-horizontal" ng-if="gegeUser.Role!=2">
+			<div class="row">
+				<div class="form-group">
+					<label class="col-sm-1 control-label text-right">医院：</label>
+					<div class="col-sm-2">
+						<select class="form-control" ng-model="searchOption" ng-options="item.Name for item in hospitalList">
+							<option value="">请选择</option>
+						</select>
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<button type="button" class="btn btn-default" ng-click="searchByHospital(1)">查询</button>
+						<button type="button" class="btn btn-default" ng-click="getAllDepartmentList(1)">全部</button>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="deparment-wrap">
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light table-department">
+					<thead>
+						<tr>
+							<th>是否启用</th>
+							<th>科室ID</th>
+							<th>医院</th>
+							<th>科室名称</th>
+							<th>上级科室</th>
+							<th>联系人</th>
+							<th>联系电话</th>
+							<th>显示顺序</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in departmentInfoList track by $index" ng-click="operateData($index,item)">
+							<td>{{item.DisplayOrderName}}</td>
+							<td>{{item.DepartmentId}}</td>
+							<td>{{item.HospitalName}}</td>
+							<td>{{item.Name}}</td>
+							<td></td>
+							<td>{{item.Contact}}</td>
+							<td>{{item.Phone}}</td>
+							<td></td>
+							<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+						</tr>
+					</tbody>
+
+				</table>
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<h4>科室信息</h4>
+						</div>
+						<div class="modal-body">
+							<div class="wrapper-md">
+								<form class="form-horizontal">
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">是否启用：</label>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="a" value="1" ng-model="departmentInfoDetail.DisplayOrder">
+                <i></i>
+                	是
+              </label>
+												</div>
+											</div>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="a" value="0" ng-model="departmentInfoDetail.DisplayOrder" checked>
+                <i></i>
+                	否
+              </label>
+												</div>
+											</div>
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">科室ID：</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" placeholder="科室ID" ng-model="departmentInfoDetail.DepartmentId" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">医院：</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" placeholder="医院" ng-if="!showSelectHospital" ng-model="departmentInfoDetail.HospitalName" readonly>
+
+												<select class="form-control" ng-if="showSelectHospital" ng-model="departmentInfoDetail.HospitalId">
+													<option ng-repeat="item in hospitalList" value="{{item.HospitalId}}">{{item.Name}}</option>
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">科室名称：</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" placeholder="科室名称" ng-model="departmentInfoDetail.Name">
+											</div>
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">上级科室：</label>
+											<div class="col-sm-4">
+												<input type="text" class="form-control" placeholder="上级科室" ng-disabled="UpDepartmentState" ng-model="departmentInfoDetail.UpDepartment">
+											</div>
+											<div class="col-sm-1">
+												<div class="checkbox">
+													<label class="i-checks">
+                											<input type="checkbox" ng-model="UpDepartmentState" ng-change="onOroffUpDepartment()">
+                											<i></i>
+                											无
+              												</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">联系人：</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" placeholder="联系人" ng-model="departmentInfoDetail.Contact">
+											</div>
+										</div>
+
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">联系电话：</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" placeholder="联系电话" ng-model="departmentInfoDetail.Phone">
+											</div>
+										</div>
+
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+						<div class="modal-footer" style="text-align: center;">
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="subDepartmentInfo()">确定</button>
+							</div>
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="closeModal()">取消</button>
+							</div>
+						</div>
+					</div>
+					</divs>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

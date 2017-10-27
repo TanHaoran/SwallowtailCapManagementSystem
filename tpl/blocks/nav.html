@@ -1,0 +1,122 @@
+<!-- list -->
+<ul class="nav">
+	<li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+		<!--<span>导航栏</span>-->
+	</li>
+
+	<li ng-show="gegePermisson.nurseCertificatePermisson || gegePermisson.nurseLiscencePermisson">
+		<a href class="auto">
+			<span class="pull-right text-muted">
+        <i class="fa fa-fw fa-angle-right text"></i>
+        <i class="fa fa-fw fa-angle-down text-active"></i>
+      </span>
+			<!--<i class="glyphicon glyphicon-stats icon text-primary-dker"></i>-->
+			<img src="../../img/icon_hssfrz.png" style="display: inline-block;margin-right: 6px;" alt="" />
+			<span class="font-bold">护士身份认证</span>
+		</a>
+		<ul class="nav nav-sub dk">
+			<!--<li class="nav-sub-header">
+				<a href>
+					<span>护士身份认证</span>
+				</a>
+			</li>-->
+			<li ui-sref-active="active" ng-show="gegePermisson.nurseCertificatePermisson">
+				<a ui-sref="app.nurse-certificate">
+					<span>执业证审核</span>
+				</a>
+			</li>
+			<li ui-sref-active="active" ng-show="gegePermisson.nurseLiscencePermisson">
+				<a ui-sref="app.nurse-liscence">
+					<span>资格证审核</span>
+				</a>
+			</li>
+		</ul>
+	</li>
+	<!--<li>
+		<a ui-sref="app.system-news-publish">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">系统消息发布</span>
+		</a>
+	</li>-->
+	<li ui-sref-active="active" ng-show="gegePermisson.bannerPermisson">
+		<a ui-sref="app.banner">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/icon_banner.png" style="display: inline-block;margin-right: 6px;" alt="" />
+			<span class="font-bold">Banner管理</span>
+		</a>
+	</li>
+	<li ui-sref-active="active" ng-show="gegePermisson.noticePermisson">
+		<a ui-sref="app.notice-publish">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/icon_gg.png" style="display: inline-block;margin-right: 7px;" alt="" />
+			<span class="font-bold">公告管理</span>
+		</a>
+	</li>
+	<!--<li>
+		<a ui-sref="app.nurse-certificate">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">学分数据上传</span>
+		</a>
+	</li>
+	<li>
+		<a ui-sref="app.nurse-certificate">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">排班数据上传</span>
+		</a>
+	</li>-->
+	<li ui-sref-active="active" ng-show="gegePermisson.departmentPermisson">
+		<a ui-sref="app.department-info">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/cion_ks.png" style="display: inline-block;margin-right: 10px;" alt="" />
+			<span class="font-bold">科室管理</span>
+		</a>
+	</li>
+	<li ui-sref-active="active" ng-show="gegePermisson.nurseManagePermisson">
+		<a ui-sref="app.nurse-manage">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/icon_hs.png" style="display: inline-block;margin-right: 10px;" alt="" />
+			<span class="font-bold">护士管理</span>
+		</a>
+	</li>
+	<li ui-sref-active="active" ng-show="gegePermisson.hospitalManagePermisson">
+		<a ui-sref="app.hospital-info">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/icon_yy.png" style="display: inline-block;margin-right: 10px;" alt="" />
+			<span class="font-bold">医院信息管理</span>
+		</a>
+	</li>
+	<li ui-sref-active="active" ng-show="gegePermisson.appPermisson">
+		<a ui-sref="app.update-app">
+			<!--<i class="glyphicon glyphicon-th-large icon text-success"></i>-->
+			<img src="../../img/icon_gx.png" style="display: inline-block;margin-right: 6px;" alt="" />
+			<span class="font-bold">更新管理</span>
+		</a>
+	</li>
+	<!--<li ui-sref-active="active">
+		<a ui-sref="app.about-us">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">关于我们管理</span>
+		</a>
+	</li>-->
+	<!--<li ui-sref-active="active">
+		<a ui-sref="app.helps-operate">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">帮助管理</span>
+		</a>
+	</li>-->
+	<!--<li ui-sref-active="active">
+		<a ui-sref="app.feedback">
+			<i class="glyphicon glyphicon-edit"></i>
+			<span class="font-bold">反馈处理</span>
+		</a>
+	</li>-->
+	<li ui-sref-active="active" ng-show="gegePermisson.managerPermisson">
+		<a ui-sref="app.manager-operate">
+			<!--<i class="glyphicon glyphicon-edit"></i>-->
+			<img src="../../img/icon_gly.png" style="display: inline-block;margin-right: 10px;" alt="" />
+			<span class="font-bold">管理员管理</span>
+		</a>
+	</li>
+
+</ul>
+<!-- / list -->

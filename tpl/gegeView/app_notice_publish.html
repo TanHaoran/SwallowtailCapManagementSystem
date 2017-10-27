@@ -1,0 +1,185 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="NoticeCtrl">
+	<div ng-show="showContent">
+		<form class="form-horizontal">
+			<div class="row" style="font-size: 18px;">
+				<div class="form-group">
+					<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+						<i class="fa fa-refresh"></i>&nbsp;刷新
+					</div>
+					<div class="col-sm-1" ng-click="addNotice()"><i class="fa fa-plus-circle"></i>&nbsp;添加</div>
+					<div class="col-sm-1" ng-click="editNotice()"><i class="fa fa-pencil"></i>&nbsp;编辑</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="deparment-wrap">
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light table-notice-info">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>标题</th>
+							<th>发布机构</th>
+							<th>发布时间</th>
+							<th>接收范围</th>
+							<th>公告类型</th>
+							<th>附件</th>
+							<th>操作者</th>
+							<th>操作时间</th>
+							<th>接收状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in noticeList track by $index" ng-click="operateData($index,item)">
+							<td>{{item.NoticeId}}</td>
+							<td>{{item.Title}}</td>
+							<td>{{item.Issuer}}</td>
+							<td>{{item.NoticeTimeweb}}</td>
+							<td></td>
+							<td>{{item.noticeType}}</td>
+							<td>{{item.opreater}}</td>
+							<td>{{item.Attachment}}</td>
+							<td>{{item.OperatorTimeweb}}</td>
+							<td></td>
+						</tr>
+					</tbody>
+
+				</table>
+				<!--分页-->
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<h4>公告信息</h4>
+						</div>
+						<div class="modal-body">
+							<div class="wrapper-md">
+								<form class="form-horizontal">
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">标题：</label>
+											<div class="col-sm-4">
+												<input type="text" class="form-control" placeholder="标题" ng-model="noticeDetail.Title">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">发布机构：</label>
+											<div class="col-sm-4">
+												<input type="text" class="form-control" placeholder="发布机构" ng-model="noticeDetail.Issuer">
+											</div>
+										</div>
+										<!--<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">发布时间：</label>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="a" value="1" ng-model="noticeDetail.publishTime">
+                <i></i>
+                	立即发布
+              </label>
+												</div>
+											</div>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="a" value="0" ng-model="noticeDetail.setTimeFlag" checked>
+                <i></i>
+                	定时发布
+              </label>
+												</div>
+											</div>
+											<div class="col-sm-2">
+												<input type="text" readonly class="form-control form_datetime" id="certificate_date" placeholder="请选择时间" ng-model='noticeDetail.NoticeTime' value="2017-09-15">
+											</div>
+										</div>-->
+										<div class="form-group" ng-if="gegeUser.Role==2">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">接收范围：</label>
+											<!--<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="b" ng-value="2" ng-model="noticeDetail.Type">
+                <i></i>
+                	科室
+              </label>
+												</div>
+											</div>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="b" ng-value="1" ng-model="noticeDetail.Type">
+                <i></i>
+                	全院
+              </label>
+												</div>
+											</div>
+											<div class="col-sm-2">
+												<div class="radio">
+													<label class="i-checks">
+                <input type="radio" name="b" ng-value="0" ng-model="noticeDetail.Type" checked>
+                <i></i>
+                	平台
+              </label>
+												</div>
+											</div>-->
+											<div class="col-sm-4" style="min-height: 129px;max-height: 200px; overflow-y: auto;">
+												<div class="form-group text-left" ng-repeat="dep in depList">
+													<div class="col-sm-10 col-sm-offset-1">
+														<div class="checkbox">
+															<label class="i-checks"><input type="checkbox" ng-model="dep.DepartmentChecked"><i></i>{{dep.DepartmentName}}</label>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6 col-sm-offset-3" style="text-align: left;">
+											<div id="summernote"></div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group">
+											<label class="col-sm-2 col-sm-offset-2 control-label text-right">附件：</label>
+											<div class="col-sm-4">
+												<input id="fileToUpload" type="file" name="fileToUpload" />
+											</div>
+										</div>
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+						<div class="modal-footer" style="text-align: center;">
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="subNotice()">确定</button>
+							</div>
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="closeModal()">取消</button>
+							</div>
+						</div>
+					</div>
+					</divs>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,182 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="NurseLiscenceCtrl">
+	<div ng-show="showContent">
+		<form class="form-horizontal">
+			<div class="row" style="font-size: 18px;">
+				<div class="form-group">
+					<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+						<i class="fa fa-refresh"></i>&nbsp;刷新
+					</div>
+					<div class="col-sm-1" ng-click="editLiscenceDetail()"><i class="fa fa-pencil"></i>&nbsp;审核</div>
+				</div>
+			</div>
+		</form>
+
+		<form class="form-horizontal">
+			<div class="row">
+				<div class="form-group">
+					<label class="col-sm-1 control-label text-right">姓名：</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control" placeholder="姓名" ng-model="searchOption.Name">
+					</div>
+					<label class="col-sm-1 control-label text-right">证书编号：</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control" placeholder="证书编号" ng-model="searchOption.liscenceID">
+					</div>
+					<div class="col-sm-2 col-sm-offset-1">
+						<button type="button" class="btn btn-default" ng-click="searchByOption()">查询</button>
+						<button type="button" class="btn btn-default" ng-click="searchAll()">全部</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+		<div class="wrapper-md">
+
+			<div class="table-responsive">
+				<table class="table table-hover table-striped b-t b-light table-liscence">
+					<thead>
+						<tr>
+							<!--<th>
+								<label class="i-checks m-b-none">
+                               <input type="checkbox"><i></i>
+                           </label>
+							</th>-->
+							<th>认证状态</th>
+							<th>证书编号</th>
+							<th>管理号</th>
+							<th>姓名</th>
+							<th>性别</th>
+							<th>出生年月</th>
+							<th>专业名称</th>
+							<th>资格级别</th>
+							<th>类别</th>
+							<th>批准日期</th>
+							<th>签发单位</th>
+							<th>签发日期</th>
+							<!--<th style="width:30px;"></th>-->
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in liscenceList track by $index" ng-click="operateData($index,item)">
+							<!--<td>
+								<label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label>
+							</td>-->
+							<td data-value="currentPageNo">{{item.auditState}}</td>
+							<td data-value="currentPageNo">{{item.CertificateId}}</td>
+							<td data-value="currentPageNo">{{item.ManageId}}</td>
+							<td data-value="currentPageNo">{{item.Name}}</td>
+							<td data-value="currentPageNo">{{item.Sex}}</td>
+							<td data-value="currentPageNo">{{item.DateBirthtTime}}</td>
+							<td data-value="currentPageNo">{{item.MajorName}}</td>
+							<td data-value="currentPageNo">{{item.QuaLevel}}</td>
+							<td data-value="currentPageNo">{{item.Category}}</td>
+							<td data-value="currentPageNo">{{item.ApproveDateTime}}</td>
+							<td data-value="currentPageNo">{{item.IssuingAgency}}</td>
+							<td data-value="currentPageNo">{{item.IssuingDateTime}}</td>
+							<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+						</tr>
+					</tbody>
+
+				</table>
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<div style="position: absolute;left: 10px;top: 10px;">
+								<div style="display: inline-block;">
+									<button type="button" class="btn btn-primary" ng-click="updateAuditStatus('ok')">通过</button>
+								</div>
+								<div style="display: inline-block;">
+									<button type="button" class="btn btn-danger" ng-click="updateAuditStatus('deny')">拒绝</button>
+								</div>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="row padding_wrap">
+										<div class="col-md-6 ">编号</div>
+										<div class="col-md-6">{{liscenceDetail.CertificateId}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">管理号</div>
+										<div class="col-md-6">{{liscenceDetail.ManageId}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">姓名</div>
+										<div class="col-md-6">{{liscenceDetail.Name}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">性别</div>
+										<div class="col-md-6">{{liscenceDetail.Sex}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">出生年月</div>
+										<div class="col-md-6">{{liscenceDetail.DateBirthTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">专业名称</div>
+										<div class="col-md-6">{{liscenceDetail.MajorName}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">资格级别</div>
+										<div class="col-md-6">{{liscenceDetail.QuaLevel}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">批准日期</div>
+										<div class="col-md-6">{{liscenceDetail.ApproveDateTime}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">签发单位</div>
+										<div class="col-md-6">{{liscenceDetail.IssuingAgency}}</div>
+									</div>
+									<div class="row padding_wrap">
+										<div class="col-md-6">签发日期</div>
+										<div class="col-md-6">{{liscenceDetail.IssuingDateTime}}</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{liscenceDetail.Picture1Url}}" alt="" /></div>
+									</div>
+									<div class="row" style="margin-top: 10px;">
+										<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{liscenceDetail.Picture2Url}}" alt="" /></div>
+									</div>
+									<!--<div class="row" style="margin-top: 10px;">
+									<div class="col-md-6"><img style="width: 100%;max-height: 100px;" src="{{liscenceDetail.Picture3}}" alt="" /></div>
+								</div>-->
+								</div>
+							</div>
+							<div class="row" style="margin-top: 15px;margin-bottom: 15px;">
+								<div class="col-md-3">
+									审核意见
+								</div>
+								<div class="col-md-8">
+									<textarea class="form-control" style="resize: none;width: 100%;height: 150px;" ng-model="liscenceDetail.VerifyView" placeholder="请输入审核意见(拒绝通过为必填项)"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

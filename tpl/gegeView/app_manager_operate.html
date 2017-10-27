@@ -1,0 +1,187 @@
+<div class="bg-light lter b-b wrapper-md" ng-controller="ManagerOperateCtrl">
+	<div ng-show="showContent">
+		<form class="form-horizontal">
+			<div class="row" style="font-size: 18px;">
+				<div class="form-group">
+					<div class="col-sm-1 col-sm-offset-1" ng-click="refresh()">
+						<i class="fa fa-refresh"></i>&nbsp;刷新
+					</div>
+					<div class="col-sm-1" ng-click="addManager()"><i class="fa fa-plus-circle"></i>&nbsp;添加</div>
+					<div class="col-sm-1" ng-click="editManager()"><i class="fa fa-pencil"></i>&nbsp;授权</div>
+					<div class="col-sm-1" ng-click="deleteManager()"><i class="fa fa-times-circle-o"></i>&nbsp;删除</div>
+					<div class="col-sm-2" ng-click="restPwd()"><i class="fa fa-key"></i>&nbsp;重置密码</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="wrapper-md">
+			<div class="table-responsive">
+				<table class="table table-striped b-t b-light table-manager">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>账号</th>
+							<!--<th>密码</th>-->
+							<th>姓名</th>
+							<th>添加时间</th>
+							<th>添加者</th>
+							<th>所属医院</th>
+							<th>可管理科室</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in managerList track by $index" ng-click="operateData($index,item)">
+							<td>{{item.AdmId}}</td>
+							<td>{{item.UserId}}</td>
+							<!--<td>{{item.Password}}</td>-->
+							<td>{{item.Name}}</td>
+							<td>{{item.OpTime}}</td>
+							<td>{{item.OperatorId}}</td>
+							<td>{{item.HospitalName}}</td>
+							<td>
+								<span ng-repeat="obj in item.Admdepartmentlist">{{obj.DepartmentName}}&nbsp;&nbsp;</span>
+							</td>
+							<!--<td>
+								<a href class="active" ui-toggle-class><i class="fa fa-check text-success text-active"></i><i class="fa fa-times text-danger text"></i></a>
+							</td>-->
+						</tr>
+					</tbody>
+
+				</table>
+				<div style="width: 100%;" class="text-center" ng-if="pageList.length>0">
+					<ul class="pagination pagination-sm m-t-none m-b-none">
+						<li ng-click="goPre(currentPageNo)">
+							<a href><i class="fa fa-chevron-left"></i></a>
+						</li>
+						<li ng-repeat="i in pageList" ng-click="goCurrentPage(i)">
+							<a href>{{i}}</a>
+						</li>
+						<li ng-click="goNext(currentPageNo)">
+							<a href><i class="fa fa-chevron-right"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="modal fade" id="modal_showAudit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="text-align:center">
+				<div class="modal-dialog" style="width: 60%;margin-top: 100px;">
+					<div class="modal-content">
+						<div class="modal-header" style="position: relative;height: 60px;">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+							<h4>管理员</h4>
+						</div>
+						<div class="modal-body">
+							<div class="wrapper-md">
+								<form class="form-horizontal">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">所属医院：</label>
+													<div class="col-sm-9">
+														<select class="form-control" ng-model="managerInfo.HospitalId" ng-change="changeHospital(managerInfo.HospitalId)" ng-disabled="disableHospital">
+															<option value="">请选择</option>
+															<option ng-repeat="item in hospitalList" value="{{item.HospitalId}}">{{item.Name}}</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">姓名：</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" placeholder="姓名" ng-model="managerInfo.Name" ng-disabled="lockInput">
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">账号：</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" placeholder="账号" ng-model="managerInfo.UserId" ng-disabled="lockInput">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">密码：</label>
+													<div class="col-sm-9">
+														<input type="password" class="form-control" placeholder="密码" ng-model="managerInfo.Password" ng-disabled="lockInput">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">权限：</label>
+												</div>
+											</div>
+
+											<div class="row text-left">
+												<div class="col-sm-11 col-sm-offset-1 manager-authority" style="min-height: 129px;max-height: 200px; overflow-y: auto;">
+													<div class="form-group" ng-repeat="pmn in permissionList">
+														<div class="col-sm-10 col-sm-offset-1">
+															<div class="checkbox">
+
+																<label class="i-checks">
+                											<input type="checkbox" ng-model="pmn.checked">
+                											<i></i>
+                											{{pmn.PermissionName}}
+              													</label>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="row">
+												<div class="form-group">
+													<label class="col-sm-3 control-label text-right">可管理科室：</label>
+													<div class="col-sm-9 text-right">
+														<div class="checkbox">
+															<label class="i-checks">
+                											<input type="checkbox" ng-model="managerInfo.selectAll" ng-click="selectAll()" ng-disabled="lockDep">
+                											<i></i>
+                											全部科室
+              												</label>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="row text-left">
+												<div class="col-sm-11 col-sm-offset-1 manager-department" style="min-height: 129px;max-height: 200px; overflow-y: auto;">
+													<div class="form-group" ng-repeat="dep in depList">
+														<div class="col-sm-10 col-sm-offset-1">
+															<div class="checkbox">
+																<label class="i-checks"><input type="checkbox" ng-model="dep.DepartmentChecked" ng-disabled="lockDep"><i></i>{{dep.Name}}</label>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</form>
+							</div>
+
+						</div>
+						<div class="modal-footer" style="text-align: center;">
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="subManagerInfo()">确定</button>
+							</div>
+							<div style="display: inline-block;">
+								<button type="button" class="btn btn-default" ng-click="closeModal()">取消</button>
+							</div>
+						</div>
+					</div>
+					</divs>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
