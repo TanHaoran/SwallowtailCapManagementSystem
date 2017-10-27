@@ -83,9 +83,27 @@ app
 					$scope.hospitalInfoList = _.map(commonService.translateServerData(res.body), function(item) {
 						item.OperatorDateTime = commonService.str2date(item.OperatorTime, 'yyyy-MM-dd');
 						(item.DisplayOrder == 1) ? item.DisplayOrderName = "是": item.DisplayOrderName = "否";
-						(item.IsOpenBLSJ == 1) ? item.IsOpenBLSJName = "是": item.IsOpenBLSJName = "否";
-						(item.IsOpenXF == 1) ? item.IsOpenXFName = "是": item.IsOpenXFName = "否";
-						(item.IsOpenPB == 1) ? item.IsOpenPBName = "是": item.IsOpenPBName = "否";
+						if(item.IsOpenBLSJ == 1) {
+							item.IsOpenBLSJName = "是";
+							item.IsOpenBLSJchecked = true;
+						} else {
+							item.IsOpenBLSJName = "否";
+							item.IsOpenBLSJchecked = false;
+						}
+						if(item.IsOpenXF == 1) {
+							item.IsOpenXFName = "是";
+							item.IsOpenXFchecked = true;
+						} else {
+							item.IsOpenXFName = "否";
+							item.IsOpenXFchecked = false;
+						}
+						if(item.IsOpenPB == 1) {
+							item.IsOpenPBName = "是";
+							item.IsOpenPBchecked = true;
+						} else {
+							item.IsOpenPBName = "否";
+							item.IsOpenPBchecked = false;
+						}
 						return item;
 					});
 					$scope.pageList = [];
@@ -132,7 +150,7 @@ app
 			$scope.currentPageNo = i;
 			$scope.getHospitalInfoList($scope.currentPageNo);
 		}
-		
+
 		//还原状态
 		$scope.initState = function() {
 			$('tbody tr').removeClass('tr-success');
@@ -195,11 +213,31 @@ app
 			}
 
 		}
+
+		$scope.dealCheckData = function() {
+			if($scope.hospitalInfoDetail.IsOpenBLSJchecked) {
+				$scope.hospitalInfoDetail.IsOpenBLSJ = "1";
+			} else {
+				$scope.hospitalInfoDetail.IsOpenBLSJ = "0";
+			}
+			if($scope.hospitalInfoDetail.IsOpenXFchecked) {
+				$scope.hospitalInfoDetail.IsOpenXF = "1";
+			} else {
+				$scope.hospitalInfoDetail.IsOpenXF = "0";
+			}
+			if($scope.hospitalInfoDetail.IsOpenPBchecked) {
+				$scope.hospitalInfoDetail.IsOpenPB = "1";
+			} else {
+				$scope.hospitalInfoDetail.IsOpenPB = "0";
+			}
+		}
+
 		//更新提交医院信息
 		$scope.subHospitalInfo = function(item) {
 			$scope.hospitalInfoDetail.OperatorId = $scope.gegeUser.AdmId;
 			if($scope.operateState == 'add') {
 				console.log($scope.hospitalInfoDetail);
+				$scope.dealCheckData();
 				var data = JSON.stringify({
 					model: $scope.hospitalInfoDetail
 				});
@@ -219,6 +257,7 @@ app
 				});
 			} else if($scope.operateState == 'edit') {
 				delete $scope.hospitalInfoDetail.OperatorTime;
+				$scope.dealCheckData();
 				var data = JSON.stringify({
 					model: $scope.hospitalInfoDetail
 				});
