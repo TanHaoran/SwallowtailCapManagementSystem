@@ -5,7 +5,7 @@ app
 	.controller('BannerCtrl', ['$scope', 'commonService', 'modelService', '$newLocalStorage', '$state', function($scope, commonService, modelService, $newLocalStorage, $state) {
 		console.log('banner管理');
 		$scope.showContent = false;
-		$scope.bannerNum = 5;
+
 		$scope.gegeUser = JSON.parse($newLocalStorage.get('gege_manager'));
 		if($scope.gegeUser) {
 			//判断是否有权限
@@ -20,7 +20,7 @@ app
 		}
 
 		$scope.getBanner = function() {
-			$scope.bannerList=[];
+			$scope.bannerList = [];
 			modelService.getBanner({
 				operatorId: $scope.gegeUser.AdmId
 			}).then(function(res) {
@@ -30,15 +30,22 @@ app
 					$scope.bannerList = _.map(commonService.translateServerData(res.body), function(item) {
 						item.bannerImg = modelService.rootUrl + 'Banner/' + item.BannerUrl;
 						item.btnName = '编辑';
-						if(item.IsFlag == 0) {
+						//0是已关闭1是已开启
+						if(item.IsDelete == 0) {
 							item.showState = '点击开启';
-						} else if(item.IsFlag == 1) {
+						} else if(item.IsDelete == 1) {
 							item.showState = '点击关闭';
 						}
 
 						item.btnState = true;
 						return item;
 					});
+					$scope.bannerNum = 5;
+					for(var i = 0; i < $scope.bannerList.length; i++) {
+						if($scope.bannerList[i].IsDelete == 0) {
+							$scope.bannerNum--;
+						}
+					}
 
 				} else {
 					$scope.pageList = [];
@@ -48,35 +55,31 @@ app
 		$scope.getBanner();
 
 		$scope.bannerShowOrNot = function(item) {
+			console.log($scope.bannerNum);
 			//限制banner至少保留一张
-			for(var i = 0; i < $scope.bannerList.length; i++) {
-				if($scope.bannerList[i].IsDelete == 0) {
-					if($scope.bannerNum == 1) {
-						alert('至少需要保留1张banner');
-						return;
-					} else {
-						$scope.bannerNum--;
-					}
-
-				}
-			}
-
 			if(item.IsDelete == 1) {
-				item.IsDelete = 0;
-				item.showState = '点击开启';
-				$scope.bannerNum--;
+				if($scope.bannerNum <= 1) {
+					alert('至少需要保留1张banner');
+					return;
+				} else {
+					item.IsDelete = 0;
+					item.showState = '点击开启';
+					$scope.bannerNum--;
+				}
+
 			} else if(item.IsDelete == 0) {
 				item.IsDelete = 1;
 				item.showState = '点击关闭';
 				$scope.bannerNum++;
 			}
+
 		}
 
 		//显示大图及改变图片
 		$scope.showPic = function(item) {
 			//编辑状态下放大图片并可以改变图片
 			if(!item.btnState) {
-				$scope.bannerPic =angular.copy(item);
+				$scope.bannerPic = angular.copy(item);
 				$('#modal_showAudit').modal('show');
 			}
 		}
@@ -124,7 +127,7 @@ app
 						var res = JSON.parse(res);
 						if(res.code == 0) {
 							$scope.bannerPic.BannerUrl = res.body.Filename;
-							$scope.bannerPic.operatorId=$scope.gegeUser.AdmId;
+							$scope.bannerPic.operatorId = $scope.gegeUser.AdmId;
 							console.log({
 								model: $scope.bannerPic
 							});
@@ -149,7 +152,7 @@ app
 					}
 				});
 			}
-			
+
 		}
 
 		//关闭图片modal
@@ -164,7 +167,7 @@ app
 				item.btnState = false;
 			} else {
 				//更新banner信息
-				item.operatorId=$scope.gegeUser.AdmId;
+				item.operatorId = $scope.gegeUser.AdmId;
 				console.log(JSON.stringify({
 					model: item
 				}));
