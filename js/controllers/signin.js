@@ -22,8 +22,8 @@ app.controller('SigninFormController', ['$scope', '$http', '$state', 'modelServi
 		*/
 	}
 
-    // enter登录
-    $scope.enterEvent = function(e) {
+
+    $scope.enterEvent = function(e) { // enter登录
         var keycode = window.event?e.keyCode:e.which;
         if(keycode==13){
 			$scope.login();
